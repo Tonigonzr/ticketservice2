@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketservice2/LoginPage.dart';
 import 'package:ticketservice2/MyHomePage.dart';
+import 'package:ticketservice2/ProfileScreen.dart';
 import 'package:ticketservice2/TicketDetailsScreen.dart';
 
 
@@ -48,6 +49,17 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.red,
               ),
             ),
+            ListTile(
+              title: Text('Mi perfil'),
+              leading: Icon(Icons.person),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+            ),
+
             ListTile(
               title: Text('Crear Ticket'),
               leading: Icon(Icons.home),
