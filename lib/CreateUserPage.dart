@@ -33,13 +33,30 @@ class _CreateUserState extends State<CreateUserPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 40),
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    child: Image.asset(
+                      'assets/images/ticketservice1.png',
+                      height: 140,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 32.0),
-            Text(
-              "Registrarse",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            Center(
+              child: Text(
+                "Registrarse",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             SizedBox(height: 16.0),
@@ -162,11 +179,12 @@ class _CreateUserState extends State<CreateUserPage> {
         style: TextStyle(fontSize: 18.0),
       ),
       style: ElevatedButton.styleFrom(
-        primary: Colors.orange,
+        primary: Colors.red,
         onPrimary: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
+
       ),
     );
   }

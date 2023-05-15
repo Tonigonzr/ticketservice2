@@ -28,17 +28,12 @@ class _LoginState extends State<LoginPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 100),
-            Text(
-              "TicketService",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               child: Image.asset(
-                'lib/logo.JPG',
-                height: 80,
+                'assets/images/ticketservice1.png',
+                height: 140,
               ),
             ),
             SizedBox(height: 40),
@@ -177,7 +172,7 @@ class _LoginState extends State<LoginPage> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         style: ElevatedButton.styleFrom(
-          primary: Color(0xFF82B540),
+          primary: Color(0xFFFA0202),
           padding: EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
