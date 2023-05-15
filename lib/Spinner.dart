@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ticketservice2/LoginPage.dart';
 import 'package:ticketservice2/MyHomePage.dart';
+import 'package:ticketservice2/TicketDetailsScreen.dart';
 
 
 class menulateral extends StatelessWidget {
@@ -60,9 +64,21 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SecondScreen()),
+                  MaterialPageRoute(builder: (context) => TicketListScreen()  ),
                 );
               },
+            ),
+            ListTile(
+              title: Text('Cerrar Sesión'),
+              leading: Icon(Icons.exit_to_app),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                      (route) => false,
+                );
+              }, // Add code to sign out the user and navigate to the login screen
             ),
           ],
         ),
@@ -70,17 +86,40 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+class TicketListScreen extends StatelessWidget {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-
-class SecondScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Segunda pantalla'),
+        title: Text('Lista de tickets'),
       ),
-      body: Center(
-        child: Text('Contenido de la segunda pantalla'),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('formularios').orderBy('fecha', descending: true).snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              return ListTile(
+                title: Text(document['categoria']),
+                subtitle: Text(document['descripcion']),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TicketDetailsScreen(ticket: document)),
+                  );
+                },
+              );
+            }).toList(),
+          );
+        },
       ),
     );
   }

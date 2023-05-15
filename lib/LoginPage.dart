@@ -169,7 +169,7 @@ class _LoginState extends State<LoginPage> {
           }
         },
         child: Text(
-          "Ingresar",
+          "Entrar",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         style: ElevatedButton.styleFrom(
