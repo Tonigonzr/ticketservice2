@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => homepage()),
+                  MaterialPageRoute(builder: (context) => FormularioFirebase()),
                 );
               },
             ),
