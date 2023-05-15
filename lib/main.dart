@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketservice2/LoginPage.dart';
 import 'package:ticketservice2/MyHomePage.dart';
+import 'package:ticketservice2/Spinner.dart';
 
 
 void main() async{
@@ -29,7 +30,7 @@ class _MyAppState extends State<MyApp>{
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "TicketService",
-      home: LoginPage(),
+      home: menulateral(),
     );
 
   }

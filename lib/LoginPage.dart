@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ticketservice2/CreateUserPage.dart';
 import 'package:ticketservice2/MyHomePage.dart';
+import 'package:ticketservice2/Spinner.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -155,7 +156,7 @@ class _LoginState extends State<LoginPage> {
                   isEmailVerified = true; // Marcar como verificado
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => homepage()),
+                    MaterialPageRoute(builder: (context) => menulateral()),
                         (Route<dynamic> route) => false,
                   );
                 } else {
