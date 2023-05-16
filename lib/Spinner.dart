@@ -114,13 +114,13 @@ class HomeScreen extends StatelessWidget {
 }
 
 
+
 class TicketListScreen extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
-    final String currentUserUid = FirebaseAuth.instance.currentUser!.uid;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de tickets'),
@@ -128,8 +128,8 @@ class TicketListScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore
             .collection('formularios')
-            .where('user_id', isEqualTo: currentUserUid)
-            .orderBy('fecha', descending: true)
+            .where('user_id', isEqualTo: currentUser!.uid)
+            .orderBy('email', descending: false)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -164,5 +164,3 @@ class TicketListScreen extends StatelessWidget {
     );
   }
 }
-
-

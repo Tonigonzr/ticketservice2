@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FormularioFirebase extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class FormularioFirebase extends StatefulWidget {
 
 class _FormularioFirebaseState extends State<FormularioFirebase> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final User? currentUser = FirebaseAuth.instance.currentUser;
 
   final _nombreController = TextEditingController();
   final _emailController = TextEditingController();
@@ -29,6 +31,7 @@ class _FormularioFirebaseState extends State<FormularioFirebase> {
         'email': email,
         'categoria': categoria,
         'descripcion': descripcion,
+        'user_id': currentUser!.uid, // Asignar el UID del usuario actual
         'fecha': DateTime.now(),
       });
       print('Formulario enviado correctamente');

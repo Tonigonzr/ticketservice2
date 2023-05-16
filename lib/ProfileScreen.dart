@@ -44,40 +44,6 @@ class _ProfilePageState extends State<ProfilePage> {
               "Email: ${_user.email}",
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () async {
-                final imagePicker = ImagePicker();
-                final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-
-                if (pickedFile != null) {
-                  // Subir la foto al almacenamiento de Firebase Storage
-                  final storageRef = firebase_storage.FirebaseStorage.instance.ref();
-                  final fileRef = storageRef.child('perfil/${_user.uid}');
-                  await fileRef.putFile(File(pickedFile.path));
-
-                  // Obtener la URL de descarga de la foto
-                  final downloadURL = await fileRef.getDownloadURL();
-
-                  // Guardar la URL en la colección "fotos_usuarios" de Firestore
-                  final firestore = FirebaseFirestore.instance;
-                  final userRef = firestore.collection('fotos_usuarios').doc(_user.uid);
-                  await userRef.set({
-                    'user_id': _user.uid,
-                    'url': downloadURL,
-                  });
-
-                  // Actualizar la URL de la foto en el perfil del usuario
-                  await _user.updatePhotoURL(downloadURL);
-
-                  setState(() {
-                    // Actualizar la imagen mostrada en el avatar
-                    _user = FirebaseAuth.instance.currentUser!;
-                  });
-                }
-              },
-              child: Text('Seleccionar foto'),
-            ),
           ],
         ),
       ),
