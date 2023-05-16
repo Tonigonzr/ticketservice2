@@ -77,10 +77,14 @@ class _LoginState extends State<LoginPage> {
       },
       child: Text(
         "¿No tienes cuenta? Regístrate",
-        style: TextStyle(fontSize: 16),
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.red, // Agregar color rojo
+        ),
       ),
     );
   }
+
 
   Widget formulario() {
     return Form(
