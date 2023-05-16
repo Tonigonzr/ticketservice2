@@ -6,7 +6,7 @@ import 'package:ticketservice2/LoginPage.dart';
 import 'package:ticketservice2/MyHomePage.dart';
 import 'package:ticketservice2/ProfileScreen.dart';
 import 'package:ticketservice2/TicketDetailsScreen.dart';
-
+import 'package:intl/intl.dart';
 
 class menulateral extends StatelessWidget {
   @override
@@ -119,8 +119,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-
-
 class TicketListScreen extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final User? currentUser = FirebaseAuth.instance.currentUser;
@@ -152,16 +150,28 @@ class TicketListScreen extends StatelessWidget {
 
           return ListView(
             children: tickets.map((DocumentSnapshot document) {
-              return ListTile(
-                title: Text(document['categoria']),
-                subtitle: Text(document['descripcion']),
-                trailing: Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TicketDetailsScreen(ticket: document)),
-                  );
-                },
+              final date = document['fecha'] as Timestamp;
+              final formattedDate = DateFormat('EEEE, dd MMMM yyyy').format(date.toDate());
+
+              return Column(
+                children: [
+                  SizedBox(height: 16),
+                  Text(
+                    formattedDate,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  ListTile(
+                    title: Text(document['categoria']),
+                    subtitle: Text(document['descripcion']),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TicketDetailsScreen(ticket: document)),
+                      );
+                    },
+                  ),
+                ],
               );
             }).toList(),
           );
