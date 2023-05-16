@@ -20,6 +20,48 @@ class _ProfilePageState extends State<ProfilePage> {
     _user = FirebaseAuth.instance.currentUser!;
   }
 
+  void sendPasswordResetEmail() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _user.email!);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Correo electrónico enviado'),
+            content: Text('Se ha enviado un correo electrónico para restablecer la contraseña.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Aceptar'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('No se pudo enviar el correo electrónico de restablecimiento de contraseña.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Aceptar'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +85,11 @@ class _ProfilePageState extends State<ProfilePage> {
             Text(
               "Email: ${_user.email}",
               style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: sendPasswordResetEmail,
+              child: Text('Cambiar contraseña'),
             ),
           ],
         ),

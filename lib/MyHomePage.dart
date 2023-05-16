@@ -28,6 +28,7 @@ class _FormularioFirebaseState extends State<FormularioFirebase> {
     super.initState();
     // Asignar el correo electrónico del usuario actual al controlador de email
     _emailController.text = currentUser?.email ?? '';
+    _nombreController.text = currentUser?.displayName ?? '';
   }
 
   void enviarFormulario(
