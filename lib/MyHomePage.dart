@@ -23,6 +23,13 @@ class _FormularioFirebaseState extends State<FormularioFirebase> {
     'Problema con el producto recibido',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Asignar el correo electrónico del usuario actual al controlador de email
+    _emailController.text = currentUser?.email ?? '';
+  }
+
   void enviarFormulario(
       String nombre, String email, String categoria, String descripcion) async {
     try {
@@ -87,10 +94,10 @@ class _FormularioFirebaseState extends State<FormularioFirebase> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text('Formulario Firebase'),
-    ),
-    body: Padding(
-    padding: EdgeInsets.all(16.0),
+          title: Text('Formulario Firebase'),
+        ),
+        body: Padding(
+        padding: EdgeInsets.all(16.0),
     child: Column(
     children: [
     TextField(
@@ -103,49 +110,51 @@ class _FormularioFirebaseState extends State<FormularioFirebase> {
     controller: _emailController,
     decoration: InputDecoration(
     labelText: 'Correo electrónico',
-      ),
+    ),
+    enabled: false, // Hacer el campo no editable
     ),
     DropdownButtonFormField<String>(
     value: _categoriaSeleccionada,
     decoration: InputDecoration(
     labelText: 'Categoría del problema',
-      ),
+    ),
     onChanged: (String? newValue) {
-    setState(() {
-    _categoriaSeleccionada = newValue;
+    setState(()
+    {
+      _categoriaSeleccionada = newValue;
     });
     },
-    items: _categorias
-        .map<DropdownMenuItem<String>>(
-    (String value) => DropdownMenuItem<String>(
-    value: value,
-    child: Text(value),
+      items: _categorias
+          .map<DropdownMenuItem<String>>(
+            (String value) => DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        ),
+      )
+          .toList(),
     ),
-    )
-        .toList(),
-    ),
-    TextField(
-    controller: _descripcionController,
-    maxLines: 4,
-    decoration: InputDecoration(
-    labelText: 'Descripción del problema',
-    ),
-    ),
+      TextField(
+        controller: _descripcionController,
+        maxLines: 4,
+        decoration: InputDecoration(
+          labelText: 'Descripción del problema',
+        ),
+      ),
       SizedBox(height: 16),
       ElevatedButton(
-    onPressed: validarYEnviarFormulario,
-    child: Text('Enviar'),
-    ),
-    SizedBox(height: 16),
-    ElevatedButton(
-    onPressed: () {
-    Navigator.of(context).pop();
-    },
-      child: Text('Volver'),
-    ),
+        onPressed: validarYEnviarFormulario,
+        child: Text('Enviar'),
+      ),
+      SizedBox(height: 16),
+      ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text('Volver'),
+      ),
     ],
     ),
-    ),
+        ),
     );
   }
 }

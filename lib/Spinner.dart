@@ -12,7 +12,7 @@ class menulateral extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'My app title',
+        title: 'TicketService',
         home: new HomeScreen()
     );
   }
@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mi App'),
+        title: Text('TicketService'),
         backgroundColor: Colors.red,
       ),
       body: Center(
@@ -33,10 +33,16 @@ class HomeScreen extends StatelessWidget {
           children: [
             Image.asset(
               'assets/images/ticketservice1.png',
-              width: 200,
+              width: 350,
             ),
             SizedBox(height: 20),
-            Text('Bienvenido a Ticket Service'),
+            Text(
+              'Bienvenido a Ticket Service',
+              style: TextStyle(
+                fontSize: 24, // Tamaño de fuente deseado
+              ),
+            ),
+
           ],
         ),
       ),
