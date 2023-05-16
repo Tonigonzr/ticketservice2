@@ -16,6 +16,7 @@ class menulateral extends StatelessWidget {
     );
   }
 }
+User? currentUser = FirebaseAuth.instance.currentUser;
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -42,9 +43,11 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text("Guillermo García"),
-              accountEmail: Text("email@prueba.es"),
-              currentAccountPicture: CircleAvatar(backgroundColor: Colors.white),
+              accountName: Text(currentUser?.displayName ?? ""),
+              accountEmail: Text(currentUser?.email ?? ""),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: NetworkImage(currentUser?.photoURL ?? ""),
+              ),
               decoration: BoxDecoration(
                 color: Colors.red,
               ),
