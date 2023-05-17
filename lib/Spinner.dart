@@ -1,25 +1,61 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ticketservice2/AboutUs.dart';
 import 'package:ticketservice2/LoginPage.dart';
 import 'package:ticketservice2/MyHomePage.dart';
 import 'package:ticketservice2/ProfileScreen.dart';
 import 'package:ticketservice2/TicketDetailsScreen.dart';
-import 'package:intl/intl.dart';
 
-class menulateral extends StatelessWidget {
+class menulateral extends StatefulWidget {
+  @override
+  _menulateralState createState() => _menulateralState();
+}
+
+class _menulateralState extends State<menulateral> {
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late Stream<User?> userStream;
+
+  @override
+  void initState() {
+    super.initState();
+    userStream = FirebaseAuth.instance.authStateChanges();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'TicketService',
-        home: new HomeScreen()
+      title: 'TicketService',
+      home: HomeScreen(userStream: userStream),
     );
   }
 }
-User? currentUser = FirebaseAuth.instance.currentUser;
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  final Stream<User?> userStream;
+
+  const HomeScreen({required this.userStream});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  User? currentUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.userStream.listen((User? user) {
+      setState(() {
+        currentUser = user;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,25 +75,33 @@ class HomeScreen extends StatelessWidget {
             Text(
               'Bienvenido a Ticket Service',
               style: TextStyle(
-                fontSize: 24, // Tamaño de fuente deseado
+                fontSize: 24,
               ),
             ),
-
           ],
         ),
       ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text(currentUser?.displayName ?? ""),
-              accountEmail: Text(currentUser?.email ?? ""),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(currentUser?.photoURL ?? ""),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.red,
-              ),
+            StreamBuilder<User?>(
+              stream: widget.userStream,
+              builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+                User? user = snapshot.data;
+                if (user != null) {
+                  currentUser = user;
+                }
+                return UserAccountsDrawerHeader(
+                  accountName: Text(currentUser?.displayName ?? ""),
+                  accountEmail: Text(currentUser?.email ?? ""),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: NetworkImage(currentUser?.photoURL ?? ""),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                  ),
+                );
+              },
             ),
             ListTile(
               title: Text('Mi perfil'),
@@ -69,7 +113,6 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
-
             ListTile(
               title: Text('Crear Ticket'),
               leading: Icon(Icons.home),
@@ -86,7 +129,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TicketListScreen()  ),
+                  MaterialPageRoute(builder: (context) => TicketListScreen(currentUser: currentUser)),
                 );
               },
             ),
@@ -98,7 +141,28 @@ class HomeScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => AboutUsScreen()),
                 );
-              }, // Add code to sign out the user and navigate to the login screen
+              },
+            ),
+            FutureBuilder<bool>(
+              future: isAdmin(currentUser),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container();
+                }
+                final bool isAdmin = snapshot.data ?? false;
+
+                if (isAdmin) {
+                  return ListTile(
+                    title: Text('Admin Panel'),
+                    leading: Icon(Icons.admin_panel_settings),
+                    onTap: () {
+                      // Agrega aquí la acción deseada para el panel de administrador
+                    },
+                  );
+                } else {
+                  return Container();
+                }
+              },
             ),
             ListTile(
               title: Text('Cerrar Sesión'),
@@ -110,18 +174,32 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => LoginPage()),
                       (route) => false,
                 );
-              }, // Add code to sign out the user and navigate to the login screen
+              },
             ),
           ],
         ),
       ),
     );
   }
+
+  Future<bool> isAdmin(User? user) async {
+    if (user != null) {
+      DocumentSnapshot snapshot = await _firestore.collection('usuarios').doc(user.uid).get();
+      Map<String, dynamic>? userData = snapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null && userData.containsKey('rol')) {
+        return userData['rol'] == 'admin';
+      }
+    }
+    return false;
+  }
 }
 
 class TicketListScreen extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final User? currentUser = FirebaseAuth.instance.currentUser;
+  final User? currentUser;
+
+   TicketListScreen({required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
