@@ -25,7 +25,10 @@ class TicketDetailsScreen extends StatelessWidget {
             SizedBox(height: 8.0),
             Text('Descripción del problema: ${ticket['descripcion']}'),
             SizedBox(height: 8.0),
+            Text('Estado del ticket: ${ticket['estado']}'),
+            SizedBox(height: 8.0),
             Text('Fecha: ${ticket['fecha'].toDate().toString()}'),
+
           ],
         ),
       ),

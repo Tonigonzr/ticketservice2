@@ -115,14 +115,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            ListTile(
-              title: Text('Crear Ticket'),
-              leading: Icon(Icons.home),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FormularioFirebase()),
-                );
+            FutureBuilder<bool>(
+              future: isAdmin(currentUser),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container();
+                }
+                final bool isAdmin = snapshot.data ?? false;
+
+                if (!isAdmin) {
+                  return ListTile(
+                    title: Text('Crear Ticket'),
+                    leading: Icon(Icons.home),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FormularioFirebase()),
+                      );
+                    },
+                  );
+                } else {
+                  return Container();
+                }
               },
             ),
             ListTile(
@@ -159,8 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     leading: Icon(Icons.admin_panel_settings),
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UserListScreen()),
+                        context,
+                        MaterialPageRoute(builder: (context) => UserListScreen()),
                       );
                     },
                   );
