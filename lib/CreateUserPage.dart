@@ -1,25 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class CreateUserPage extends StatefulWidget{
-
-
+class CreateUserPage extends StatefulWidget {
   @override
-  State createState(){
+  State createState() {
     return _CreateUserState();
   }
 }
 
 class _CreateUserState extends State<CreateUserPage> {
-
-  late String email, password;
+  late String email, password, userEmail; // Added userEmail here
   final _formsKey = GlobalKey<FormState>();
   String error = '';
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +87,6 @@ class _CreateUserState extends State<CreateUserPage> {
     );
   }
 
-
   Widget buildEmail() {
     return TextFormField(
       decoration: InputDecoration(
@@ -113,6 +105,11 @@ class _CreateUserState extends State<CreateUserPage> {
           return "Este campo es obligatorio";
         }
         return null;
+      },
+      onChanged: (value) {
+        setState(() {
+          userEmail = value; // Update userEmail here
+        });
       },
     );
   }
@@ -147,9 +144,28 @@ class _CreateUserState extends State<CreateUserPage> {
           UserCredential? credenciales = await crearUsuario(email, password);
           if (credenciales != null) {
             if (credenciales.user != null) {
-              String userName = email.split('@')[0]; // Obtener la parte izquierda del '@' como nombre de usuario
-              await credenciales.user!.updateDisplayName(userName); // Establecer el nombre de usuario en Firebase Auth
+              String userName = email.split('@')[0];
+              await credenciales.user!.updateDisplayName(userName);
               await credenciales.user!.sendEmailVerification();
+
+              // Asignar el rol y funciones según el correo electrónico
+              if (email == "antoniomiguelcaro02@gmail.com") {
+                await FirebaseFirestore.instance
+                    .collection('usuarios')
+                    .doc(credenciales.user!.uid)
+                    .set({
+                  'rol': 'admin',
+                  'correo': userEmail,
+                });
+              } else {
+                await FirebaseFirestore.instance
+                    .collection('usuarios')
+                    .doc(credenciales.user!.uid)
+                    .set({
+                  'rol': 'cliente',
+                  'correo': userEmail,
+                });
+              }
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -183,13 +199,12 @@ class _CreateUserState extends State<CreateUserPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-
       ),
     );
   }
 
-
-  Future<UserCredential?> crearUsuario(String email, String password) async {
+  Future<UserCredential?> crearUsuario(
+      String email, String password) async {
     try {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(

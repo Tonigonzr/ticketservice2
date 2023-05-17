@@ -129,54 +129,126 @@ class TicketListScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Lista de tickets'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore
-            .collection('formularios')
-            .where('user_id', isEqualTo: currentUser!.uid)
-            .orderBy('email', descending: false)
-            .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      body: FutureBuilder<bool>(
+        future: isAdmin(currentUser),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+          final bool isAdmin = snapshot.data ?? false;
+
+          if (isAdmin) {
+            return StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('formularios').orderBy('email', descending: false).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                final tickets = snapshot.data!.docs;
+
+                if (tickets.isEmpty) {
+                  return Text('No hay tickets disponibles');
+                }
+
+                return ListView(
+                  children: tickets.map((DocumentSnapshot document) {
+                    final date = document['fecha'] as Timestamp;
+                    final formattedDate = DateFormat('EEEE, dd MMMM yyyy').format(date.toDate());
+
+                    return Column(
+                      children: [
+                        SizedBox(height: 16),
+                        Text(
+                          formattedDate,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        ListTile(
+                          title: Text(document['categoria']),
+                          subtitle: Text(document['descripcion']),
+                          trailing: Icon(Icons.arrow_forward),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TicketDetailsScreen(ticket: document)),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                );
+              },
+            );
+          } else {
+            return StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('formularios')
+                  .where('user_id', isEqualTo: currentUser!.uid)
+                  .orderBy('email', descending: false)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                final tickets = snapshot.data!.docs;
+
+                if (tickets.isEmpty) {
+                  return Text('No tienes tickets');
+                }
+
+                return ListView(
+                  children: tickets.map((DocumentSnapshot document) {
+                    final date = document['fecha'] as Timestamp;
+                    final formattedDate = DateFormat('EEEE, dd MMMM yyyy').format(date.toDate());
+
+                    return Column(
+                      children: [
+                        SizedBox(height: 16),
+                        Text(
+                          formattedDate,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        ListTile(
+                          title: Text(document['categoria']),
+                          subtitle: Text(document['descripcion']),
+                          trailing: Icon(Icons.arrow_forward),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TicketDetailsScreen(ticket: document)),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                );
+              },
+            );
           }
-          final tickets = snapshot.data!.docs;
-
-          if (tickets.isEmpty) {
-            return Text('No tienes tickets');
-          }
-
-          return ListView(
-            children: tickets.map((DocumentSnapshot document) {
-              final date = document['fecha'] as Timestamp;
-              final formattedDate = DateFormat('EEEE, dd MMMM yyyy').format(date.toDate());
-
-              return Column(
-                children: [
-                  SizedBox(height: 16),
-                  Text(
-                    formattedDate,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  ListTile(
-                    title: Text(document['categoria']),
-                    subtitle: Text(document['descripcion']),
-                    trailing: Icon(Icons.arrow_forward),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TicketDetailsScreen(ticket: document)),
-                      );
-                    },
-                  ),
-                ],
-              );
-            }).toList(),
-          );
         },
       ),
     );
+  }
+
+  Future<bool> isAdmin(User? user) async {
+    if (user != null) {
+      DocumentSnapshot snapshot = await _firestore.collection('usuarios').doc(user.uid).get();
+      Map<String, dynamic>? userData = snapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null && userData.containsKey('rol')) {
+        return userData['rol'] == 'admin';
+      }
+    }
+    return false;
   }
 }
