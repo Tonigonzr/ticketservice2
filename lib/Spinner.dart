@@ -8,6 +8,8 @@ import 'package:ticketservice2/MyHomePage.dart';
 import 'package:ticketservice2/ProfileScreen.dart';
 import 'package:ticketservice2/TicketDetailsScreen.dart';
 
+import 'AdminPanelScreen.dart';
+
 class menulateral extends StatefulWidget {
   @override
   _menulateralState createState() => _menulateralState();
@@ -156,7 +158,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: Text('Admin Panel'),
                     leading: Icon(Icons.admin_panel_settings),
                     onTap: () {
-                      // Agrega aquí la acción deseada para el panel de administrador
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => UserListScreen()),
+                      );
                     },
                   );
                 } else {
