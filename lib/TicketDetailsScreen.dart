@@ -19,14 +19,16 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _ticketStatus = widget.ticket['estado'] ?? 'En espera'; // Set the initial ticket status
+    _ticketStatus =
+        widget.ticket['estado'] ?? 'En espera'; // Set the initial ticket status
     _checkAdmin();
   }
 
   void _checkAdmin() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      DocumentSnapshot snapshot = await _firestore.collection('usuarios').doc(currentUser.uid).get();
+      DocumentSnapshot snapshot = await _firestore.collection('usuarios').doc(
+          currentUser.uid).get();
       Map<String, dynamic>? userData = snapshot.data() as Map<String, dynamic>?;
 
       if (userData != null && userData.containsKey('rol')) {
@@ -136,23 +138,25 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
             ),
             SizedBox(height: 16),
             if (_isAdmin)
-              Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => _updateTicketStatus('En proceso'),
-                    child: Text('Marcar como en Proceso'),
-                  ),
-                  SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () => _updateTicketStatus('Resuelto'),
-                    child: Text('Marcar como Resuelto'),
-                  ),
-                  SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () => _deleteTicket(),
-                    child: Text('Borrar ticket'),
-                  ),
-                ],
+              Center(
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => _updateTicketStatus('En proceso'),
+                      child: Text('Marcar como en Proceso'),
+                    ),
+                    SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () => _updateTicketStatus('Resuelto'),
+                      child: Text('Marcar como Resuelto'),
+                    ),
+                    SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () => _deleteTicket(),
+                      child: Text('Borrar ticket'),
+                    ),
+                  ],
+                ),
               ),
           ],
         ),
