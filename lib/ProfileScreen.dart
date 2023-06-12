@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -110,6 +110,54 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _showImagePreviewDialog(File imageFile) async {
+    final Uint8List imageBytes = await imageFile.readAsBytes();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Previsualización de la foto de perfil'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Image.memory(imageBytes),
+                SizedBox(height: 16),
+                Text('¿Deseas utilizar esta foto como tu nueva foto de perfil?'),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Aquí puedes implementar la lógica para actualizar la foto de perfil en Firebase
+                // utilizando el archivo imageFile
+                Navigator.of(context).pop();
+              },
+              child: Text('Actualizar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _pickAndUploadImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      await _showImagePreviewDialog(imageFile);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,9 +168,18 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(_user.photoURL ?? ""),
+            // Aquí puedes colocar el widget que desees para mostrar la foto de perfil
+            // por ejemplo, puedes usar un Container con una imagen dentro
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: NetworkImage(_user.photoURL ?? ""),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             SizedBox(height: 16),
             Text(
@@ -153,7 +210,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       controller: _nameController,
                       decoration: InputDecoration(
                         labelText: 'Nuevo nombre',
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8), // Ajusta el tamaño del InputDecoration
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -173,6 +229,11 @@ class _ProfilePageState extends State<ProfilePage> {
             ElevatedButton(
               onPressed: sendPasswordResetEmail,
               child: Text('Cambiar contraseña'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _pickAndUploadImage,
+              child: Text('Seleccionar foto de perfil'),
             ),
           ],
         ),

@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ticketservice2/AboutUs.dart';
-import 'package:ticketservice2/LoginPage.dart';
-import 'package:ticketservice2/MyHomePage.dart';
+import 'package:ticketservice2/Screens/LoginPage.dart';
+import 'package:ticketservice2/Screens/MyHomePage.dart';
 import 'package:ticketservice2/ProfileScreen.dart';
 import 'package:ticketservice2/TicketDetailsScreen.dart';
 
