@@ -71,13 +71,13 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Image.asset(
               'assets/images/ticketservice1.png',
-              width: 450,
+              width: 250,
             ),
             SizedBox(height: 65),
             Text(
               'Bienvenido a Ticket Service',
               style: TextStyle(
-                fontSize: 45,
+                fontSize: 25,
               ),
             ),
           ],

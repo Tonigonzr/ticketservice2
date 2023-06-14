@@ -28,11 +28,11 @@ class AboutUsScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 10),
-              Text(
-                'Descripción de la empresa y lo que hace.',
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
+                Text(
+                  '¡Bienvenido a Ticket Service, la plataforma líder en gestión de tickets y servicio al cliente! Somos una empresa dedicada a proporcionar una solución integral para empresas y organizaciones que buscan optimizar su atención al cliente y brindar un servicio eficiente y de calidad.',
+                  style: TextStyle(fontSize: 18,),
+                  textAlign: TextAlign.center,
+                ),
               SizedBox(height: 20),
               Text(
                 'Misión',
@@ -44,26 +44,11 @@ class AboutUsScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                'Descripción de la misión de la empresa.',
+                'Ticket Service es una aplicación móvil y web que permite a las empresas gestionar de manera efectiva los tickets de soporte, consultas y problemas reportados por sus clientes. Nuestra plataforma simplifica el proceso de seguimiento y resolución de tickets, mejorando la comunicación entre el equipo de soporte y los clientes.',
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
-              Text(
-                'Visión',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Descripción de la visión de la empresa.',
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-            ],
+              ],
           ),
         ),
       ),

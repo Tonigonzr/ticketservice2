@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ticketservice2/ResetPasswordPage.dart';
 import 'package:ticketservice2/Screens/CreateUserPage.dart';
 import 'package:ticketservice2/Screens/MyHomePage.dart';
 import 'package:ticketservice2/Spinner.dart';
@@ -68,22 +69,42 @@ class _LoginState extends State<LoginPage> {
   }
 
   Widget nuevousuario() {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CreateUserPage()),
-        );
-      },
-      child: Text(
-        "¿No tienes cuenta? Regístrate",
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.red, // Agregar color rojo
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateUserPage()),
+            );
+          },
+          child: Text(
+            "¿No tienes cuenta? Regístrate",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.red,
+            ),
+          ),
         ),
-      ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+            );
+          },
+          child: Text(
+            "¿Has olvidado la contraseña?",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.red, // Puedes ajustar el color según tus preferencias
+            ),
+          ),
+        ),
+      ],
     );
   }
+
 
 
   Widget formulario() {
