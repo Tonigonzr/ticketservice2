@@ -53,6 +53,10 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void _deleteMessage(String messageId) async {
+    await _messagesCollection.doc(messageId).delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
                       final message = messages[index];
+                      final messageId = message.id;
                       final messageText = message['message'];
                       final sender = message['sender'];
 
@@ -85,17 +90,30 @@ class _ChatScreenState extends State<ChatScreen> {
                       final color =
                       sender == 'admin' ? Colors.green : Colors.blueGrey;
 
-                      return Container(
-                        alignment: alignment,
-                        child: Card(
-                          color: color,
+                      return Dismissible(
+                        key: Key(messageId),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          color: Colors.red,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              messageText,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
+                            padding: EdgeInsets.only(right: 16.0),
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
+                        ),
+                        onDismissed: (direction) => _deleteMessage(messageId),
+                        child: Container(
+                          alignment: alignment,
+                          child: Card(
+                            color: color,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                messageText,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                ),
                               ),
                             ),
                           ),
