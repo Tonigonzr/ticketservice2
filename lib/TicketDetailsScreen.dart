@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ticketservice2/Screens/ChatScreen.dart';
 
 class TicketDetailsScreen extends StatefulWidget {
   final DocumentSnapshot ticket;
@@ -100,7 +101,18 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
       );
     }
   }
+  void _openChat() {
+    // Obtener el ID del ticket o cualquier otra información necesaria
+    String ticketId = widget.ticket.id;
 
+    // Navegar a la pantalla de chat pasando el ID del ticket como parámetro
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(ticketId: ticketId),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,6 +149,10 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _openChat(),
+              child: Text('Chat'),
+            ),
             if (_isAdmin)
               Center(
                 child: Column(
@@ -155,6 +171,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
                       onPressed: () => _deleteTicket(),
                       child: Text('Borrar ticket'),
                     ),
+                    SizedBox(height: 8),
                   ],
                 ),
               ),
